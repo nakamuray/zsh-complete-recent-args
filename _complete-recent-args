@@ -1,0 +1,20 @@
+#compdef -k menu-select ^x.
+zmodload zsh/parameter
+
+function _complete-recent-args() {
+    # add current edit buffer's words if exists
+    local w
+    for w in "${(@)words}"; do
+        if [[ -n "${w}" ]]; then
+            compadd -Q -2 -V current -- "${w}"
+        fi
+    done
+
+    # add last 10 command lines' words
+    integer i
+    for i in "${(@)${(Onk@)history}[1,10]}"; do
+        compadd -Q -2 -V $i -- "${(z@)history[$i]}"
+    done
+}
+
+_complete-recent-args "$@"
